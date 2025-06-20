@@ -578,8 +578,8 @@ class EmployeeController extends Controller {
 
     public function qualificationsEmp($id) {
         $now = date("Y-m-d H:i:s");
-        $emp = $this->emp->where('emp_number', $id)->first();
-        $quali = $this->qlt->where('emp_number', $id)->orderBy('eexp_seqno')->get();
+        $emp = $this->emp->where('emp_number', $id)->first(); //fix bug img
+        $quali = $this->qlt->where('emp_number', $id)->get();
         $trains = $this->train->where('emp_number', $id)->get();
         $edus = $this->edu->where('emp_number', $id)->get();
 
@@ -630,73 +630,7 @@ class EmployeeController extends Controller {
             'table_activity' => 'emp_education'
         ]);
 
-        if(session("param_search_emp") == null) {
-            return redirect(route('hrd.employee'));
-        }
-        else {
-            $param_search_emp = session("param_search_emp");
-            $param_route = "";
-            if($param_search_emp["emp_name"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?emp_name=" . base64_encode($param_search_emp["emp_name"]);
-                }
-                else {
-                    $param_route .= "&emp_name=" . base64_encode($param_search_emp["emp_name"]);
-                }
-            }
-            if($param_search_emp["employee_id"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?employee_id=" . base64_encode($param_search_emp["employee_id"]);
-                }
-                else {
-                    $param_route .= "&employee_id=" . base64_encode($param_search_emp["employee_id"]);
-                }
-            }
-            if($param_search_emp["emp_status"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?emp_status=" . base64_encode($param_search_emp["emp_status"]);
-                }
-                else {
-                    $param_route .= "&emp_status=" . base64_encode($param_search_emp["emp_status"]);
-                }
-            }
-            if($param_search_emp["eeo_cat_code"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?eeo_cat_code=" . base64_encode($param_search_emp["eeo_cat_code"]);
-                }
-                else {
-                    $param_route .= "&eeo_cat_code=" . base64_encode($param_search_emp["eeo_cat_code"]);
-                }
-            }
-            if($param_search_emp["termination_id"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?termination_id=" . base64_encode($param_search_emp["termination_id"]);
-                }
-                else {
-                    $param_route .= "&termination_id=" . base64_encode($param_search_emp["termination_id"]);
-                }
-            }
-            return redirect("/hrd/search_emp_get" . $param_route);
-        }
-    }
-    
-    public function deleteEducation($id){
-        $now = date("Y-m-d H:i:s");
-        
-        // Soft delete - change is_delete from 0 to 1
-        $this->edu->where('id',$id)->update(['is_delete' => 1]);
-        
-        \DB::table('log_activity')->insert([
-            'action' => 'update data employee',
-            'module' => 'Master',
-            'sub_module' => 'Personal',
-            'modified_by' => Session::get('name'),
-            'description' => 'delete Education id '.$id,
-            'created_at' => $now,
-            'updated_at' => $now,
-            'table_activity' => 'employee'
-        ]);
-        return redirect(route('hrd.employee'))->with('status', 'Education has been deleted');
+        return redirect()->route('personalEmp.qualifications', $request->idEduEmp)->with('status', 'Education has been added');
     }
 
     public function setWork(Requests\Employee\AddWork $request) {
@@ -721,172 +655,98 @@ class EmployeeController extends Controller {
             'table_activity' => 'emp_work_experience'
         ]);
 
-        if(session("param_search_emp") == null) {
-            return redirect(route('hrd.employee'));
-        }
-        else {
-            $param_search_emp = session("param_search_emp");
-            $param_route = "";
-            if($param_search_emp["emp_name"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?emp_name=" . base64_encode($param_search_emp["emp_name"]);
-                }
-                else {
-                    $param_route .= "&emp_name=" . base64_encode($param_search_emp["emp_name"]);
-                }
-            }
-            if($param_search_emp["employee_id"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?employee_id=" . base64_encode($param_search_emp["employee_id"]);
-                }
-                else {
-                    $param_route .= "&employee_id=" . base64_encode($param_search_emp["employee_id"]);
-                }
-            }
-            if($param_search_emp["emp_status"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?emp_status=" . base64_encode($param_search_emp["emp_status"]);
-                }
-                else {
-                    $param_route .= "&emp_status=" . base64_encode($param_search_emp["emp_status"]);
-                }
-            }
-            if($param_search_emp["eeo_cat_code"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?eeo_cat_code=" . base64_encode($param_search_emp["eeo_cat_code"]);
-                }
-                else {
-                    $param_route .= "&eeo_cat_code=" . base64_encode($param_search_emp["eeo_cat_code"]);
-                }
-            }
-            if($param_search_emp["termination_id"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?termination_id=" . base64_encode($param_search_emp["termination_id"]);
-                }
-                else {
-                    $param_route .= "&termination_id=" . base64_encode($param_search_emp["termination_id"]);
-                }
-            }
-            return redirect("/hrd/search_emp_get" . $param_route);
-        }
+        return redirect()->route('personalEmp.qualifications', $request->idWorkEmp)->with('status', 'Work experience has been added');
+    }
+
+    public function setTrain(Request $request) {
+        $now = date("Y-m-d H:i:s");
+        $this->train->create([
+            'emp_number' => $request->idTrainEmp,
+            'train_name' => $request->train_name,
+            'license_no' => $request->license_no,
+            'license_issued_date' => $request->license_issued_date,
+            'license_expiry_date' => $request->license_expiry_date
+        ]);
+
+        \DB::table('log_activity')->insert([
+            'action' => 'HRD Set Training',
+            'module' => 'Master',
+            'sub_module' => 'Employee',
+            'modified_by' => Session::get('name'),
+            'description' => 'HRD Set Training, emp number ' . $request->idTrainEmp,
+            'created_at' => $now,
+            'updated_at' => $now,
+            'table_activity' => 'emp_trainning'
+        ]);
+
+        return redirect()->route('personalEmp.qualifications', $request->idTrainEmp)->with('status', 'Training has been added');
     }
     
+    public function deleteEducation($id){
+        $now = date("Y-m-d H:i:s");
+        
+        $education = $this->edu->find($id);
+        $emp_number = $education->emp_number;
+        
+        // Hard delete
+        $this->edu->where('id',$id)->delete();
+        
+        \DB::table('log_activity')->insert([
+            'action' => 'update data employee',  
+            'module' => 'Master',
+            'sub_module' => 'Personal',
+            'modified_by' => Session::get('name'),
+            'description' => 'delete Education id '.$id,
+            'created_at' => $now,
+            'updated_at' => $now,
+            'table_activity' => 'employee'
+        ]);
+        
+        return redirect()->route('personalEmp.qualifications', $emp_number)->with('status', 'Education has been deleted');
+    }
+
     public function deleteWork($id){
         $now = date("Y-m-d H:i:s");
         
-        // Soft delete - change is_delete from 0 to 1
-        $this->qlt->where('id',$id)->update(['is_delete' => 1]);
+        $work = $this->qlt->find($id);
+        $emp_number = $work->emp_number;
+        
+        $this->qlt->where('id',$id)->delete();
         
         \DB::table('log_activity')->insert([
             'action' => 'update data employee',
             'module' => 'Master',
             'sub_module' => 'Personal',
             'modified_by' => Session::get('name'),
-            'description' => 'delete Work id '.$id,
-            'created_at' => $now,
-            'updated_at' => $now,
-            'table_activity' => 'employee'
-        ]);
-        return redirect(route('hrd.employee'))->with('status', 'Work experience has been deleted');
-    }
-    
-    public function setTrain(Request $request){
-        $now = date("Y-m-d H:i:s");
-        
-        $emp = $this->emp->where('emp_number', $request->idTrainEmp)->first();
-//        dd($emp);
-//        print_r('<pre>');
-//        print_r($emp);
-//        print_r('</pre>'); die;
-        $this->train->create([
-                'emp_number' => $emp->emp_number,
-                'train_name' => $request->train_name,
-                'license_no' => $request->license_no,
-                'license_issued_date' => $request->license_issued_date,
-                'license_expiry_date' => $request->license_expiry_date,
-                'pnum' => Session::get('pnum'),
-                'ptype' => Session::get('ptype')
-            ]
-        );
-        
-        \DB::table('log_activity')->insert([
-            'action' => 'hrd update data employee',
-            'module' => 'Master',
-            'sub_module' => 'Personal',
-            'modified_by' => Session::get('name'),
-            'description' => 'hrd update training  ' . $emp->emp_firstname.' '.$emp->emp_middle_name.' '.$emp->emp_lastname,
+            'description' => 'delete Work Experience id '.$id,
             'created_at' => $now,
             'updated_at' => $now,
             'table_activity' => 'employee'
         ]);
         
-        if(session("param_search_emp") == null) {
-            return redirect(route('hrd.employee'));
-        }
-        else {
-            $param_search_emp = session("param_search_emp");
-            $param_route = "";
-            if($param_search_emp["emp_name"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?emp_name=" . base64_encode($param_search_emp["emp_name"]);
-                }
-                else {
-                    $param_route .= "&emp_name=" . base64_encode($param_search_emp["emp_name"]);
-                }
-            }
-            if($param_search_emp["employee_id"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?employee_id=" . base64_encode($param_search_emp["employee_id"]);
-                }
-                else {
-                    $param_route .= "&employee_id=" . base64_encode($param_search_emp["employee_id"]);
-                }
-            }
-            if($param_search_emp["emp_status"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?emp_status=" . base64_encode($param_search_emp["emp_status"]);
-                }
-                else {
-                    $param_route .= "&emp_status=" . base64_encode($param_search_emp["emp_status"]);
-                }
-            }
-            if($param_search_emp["eeo_cat_code"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?eeo_cat_code=" . base64_encode($param_search_emp["eeo_cat_code"]);
-                }
-                else {
-                    $param_route .= "&eeo_cat_code=" . base64_encode($param_search_emp["eeo_cat_code"]);
-                }
-            }
-            if($param_search_emp["termination_id"] <> null) {
-                if($param_route == "") {
-                    $param_route .= "?termination_id=" . base64_encode($param_search_emp["termination_id"]);
-                }
-                else {
-                    $param_route .= "&termination_id=" . base64_encode($param_search_emp["termination_id"]);
-                }
-            }
-            return redirect("/hrd/search_emp_get" . $param_route);
-        }
+        return redirect()->route('personalEmp.qualifications', $emp_number)->with('status', 'Work Experience has been deleted');
     }
-    
+
     public function deleteTrain($id){
         $now = date("Y-m-d H:i:s");
         
-        // Soft delete - change is_delete from 0 to 1
-        $this->train->where('id',$id)->update(['is_delete' => 1]);
+        $training = $this->train->find($id);
+        $emp_number = $training->emp_number;
+        
+        $this->train->where('id',$id)->delete();
         
         \DB::table('log_activity')->insert([
             'action' => 'update data employee',
             'module' => 'Master',
             'sub_module' => 'Personal',
             'modified_by' => Session::get('name'),
-            'description' => 'delete Work id '.$id,
+            'description' => 'delete Training id '.$id,
             'created_at' => $now,
             'updated_at' => $now,
             'table_activity' => 'employee'
         ]);
-        return redirect(route('hrd.employee'))->with('status', 'Training has been deleted');
+        
+        return redirect()->route('personalEmp.qualifications', $emp_number)->with('status', 'Training has been deleted');
     }
 
     public function emergencyEmp($id) {
@@ -1000,13 +860,13 @@ class EmployeeController extends Controller {
     public function deleteEmergency($id){
         $now = date("Y-m-d H:i:s");
         
-        // Soft delete - change is_delete from 0 to 1
-        $this->eec->where('id',$id)->update(['is_delete' => 1]);
+        // Hard delete
+        $this->eec->where('id',$id)->delete();
         
         \DB::table('log_activity')->insert([
             'action' => 'update data employee',
             'module' => 'Master',
-            'sub_module' => 'Personal',
+            'sub_module' => 'Personal', 
             'modified_by' => Session::get('name'),
             'description' => 'delete emergency contact id '.$id,
             'created_at' => $now,
@@ -1174,8 +1034,8 @@ class EmployeeController extends Controller {
 
     public function delDependentsEmp($id) {
         $now = date("Y-m-d H:i:s");
-        // Soft delete - change is_delete from 0 to 1
-        $this->ed->where('id', $id)->update(['is_delete' => 1]);
+        // Hard delete
+        $this->ed->where('id', $id)->delete();
 
         \DB::table('log_activity')->insert([
             'action' => 'HRD Delete Dependent Employee',
@@ -1616,6 +1476,7 @@ class EmployeeController extends Controller {
         //dd($request->all());
         $now = date("Y-m-d H:i:s");
         $pic = DB::table('emp_picture')->where('emp_number', $request->emp_number)->first();
+        $emp = $this->emp->where('emp_number', $request->emp_number)->first();
         if ($request->emp_pic <> 'None') {
             if ($request->hasFile('emp_pic')) {
                 $image = $request->file('emp_pic');
@@ -2513,7 +2374,8 @@ class EmployeeController extends Controller {
     public function renewContract($id) {
         $now = date("Y-m-d H:i:s");
         $emp = $this->emp->where('emp_number', $id)->where('termination_id','=',0)->first();
-        $contracts = EmpContract::where('emp_number', $emp->emp_number)->get();
+        $contracts = EmpContract::where('emp_number', $emp->emp_number)
+        ->where('is_delete','=',0)->get();
 
         \DB::table('log_activity')->insert([
             'action' => 'HRD Renew Contract',
@@ -2637,13 +2499,21 @@ class EmployeeController extends Controller {
 
     public function deleteContract($id)
     {
-        $contract = EmpContract::find($id);
-        if (!$contract) {
-            return redirect()->back()->with('error', 'Contract tidak ditemukan');
-        }
+        // $contract = EmpContract::find($id);
+        // if (!$contract) {
+        //     return redirect()->back()->with('error', 'Contract tidak ditemukan');
+        // }
 
-        $contract->delete();
-        return redirect()->back()->with('success', 'Contract berhasil dihapus');
+        $contract = EmpContract::where('id','=', $id)
+            ->update(['is_delete'=>1]);
+
+        if ($contract) {
+            return redirect()->back()->with('success', 'Contract berhasil dihapus');
+        }
+        else
+        {
+            return redirect()->back()->with('error', 'Contract tidak dihapus');
+        }
     }
 
     public function find_emp(Request $request) {

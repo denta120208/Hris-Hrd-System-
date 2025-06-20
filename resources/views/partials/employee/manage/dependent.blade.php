@@ -8,14 +8,26 @@
         $('#ed_date_of_birth').datetimepicker({
             format: 'Y-m-d',
         });
-        $('#editDtl').click(function(){
+
+        // Add New button handler
+        $('#addNewDepen').click(function() {
             $('#idEmp').val($('#emp_id').val());
+            $('#idDep').val('');
+            $('#ed_name').val('');
+            $('#ed_relationship').val('');
+            $('#ed_date_of_birth').val('');
             $('#addDependents').show();
-            $('#editDtl').hide();
             $('#depenDtlSave').show();
             $('#depenDtlCancel').show();
+            $('.deleteButton').hide();
+            $('.editButton').hide();
+            $('#editDtl').show();
+        });
+
+        $('#editDtl').click(function(){
             $('.deleteButton').show();
             $('.editButton').show();
+            $('#editDtl').hide();
         });
         $('#depenDtlCancel').click(function(){
             $('#addDependents').hide();
@@ -23,10 +35,34 @@
             $('#depenDtlSave').hide();
             $('#depenDtlCancel').hide();
             $('.deleteButton').hide();
-            $('.editButton').hide();
+            $('.editButton').hide();    
         });
-        $('#depenDtlSave').click(function (){
-            $('form#addDependents').submit();
+
+        // Handle form submission with AJAX
+        $('form#addDependents').on('submit', function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    window.location.href = '{{ route("hrd.employee") }}';
+                }
+            });
+        });
+
+        // Handle delete with AJAX
+        $('.btn-ok').click(function(e) {
+            e.preventDefault();
+            var deleteUrl = $(this).attr('href');
+            $.ajax({
+                url: deleteUrl,
+                type: 'GET',
+                success: function(response) {
+                    window.location.href = '{{ route("hrd.employee") }}';
+                }
+            });
         });
     });
 
@@ -43,7 +79,6 @@
             $('#ed_date_of_birth').val(datebirth);
 
             $('#addDependents').show();
-            $('#editDtl').hide();
             $('#depenDtlSave').show();
             $('#depenDtlCancel').show();
         }
@@ -55,17 +90,18 @@ function date_formated($date){
     return $new_date;
 }
 ?>
+<input type="hidden" id="emp_id" value="{{ Request::segment(3) }}" />
 <form id="addDependents" action="{{ route('personalEmp.setDependent') }}" method="POST">
     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
     <input type="hidden" name="idEmp" id="idEmp" />
     <input type="hidden" name="idDep" id="idDep" />
     <div class="form-group">
         <label for="ed_name">Name</label>
-        <input class="form-control" type="text" name="ed_name" id="ed_name" />
+        <input class="form-control" type="text" name="ed_name" id="ed_name" required />
     </div>
     <div class="form-group">
         <label for="ed_relationship">Relationship</label>
-        <select class="form-control" name="ed_relationship" id="ed_relationship">
+        <select class="form-control" name="ed_relationship" id="ed_relationship" required>
             <option value="">-= Select =-</option>
             <option value="Spouse">Spouse</option>
             <option value="Child">Child</option>
@@ -73,7 +109,7 @@ function date_formated($date){
     </div>
     <div class="form-group">
         <label for="ed_date_of_birth">Date Of Birth</label>
-        <input class="form-control" type="text" name="ed_date_of_birth" id="ed_date_of_birth" readonly="readonly" />
+        <input class="form-control" type="text" name="ed_date_of_birth" id="ed_date_of_birth" readonly="readonly" required />
     </div>
     <input type="submit" class="btn btn-primary" id="depenDtlSave" value="Save">
     <input type="reset" class="btn btn-danger" id="depenDtlCancel" value="Cancel">
@@ -126,5 +162,6 @@ function date_formated($date){
             @endif
         </tbody>
     </table>
+    <button class="btn btn-primary" id="addNewDepen">Add New</button>
     <button class="btn btn-success" id="editDtl">Edit</button>
 </div>

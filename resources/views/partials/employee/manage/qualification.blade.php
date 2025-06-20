@@ -12,9 +12,13 @@ function date_formated($date) {
         $('#addTrain').hide();
         $('#eduDtlSave').hide();
         $('#eduDtlCancel').hide();
+        $('#workDtlSave').hide();
+        $('#workDtlCancel').hide();
+        $('#trainDtlSave').hide();
+        $('#trainDtlCancel').hide();
         $('.deleteButton').hide();
-        $('.deleteButton1').hide();
-        $('.deleteButton2').hide();
+        $('.editItemButton').hide();
+        
         $('#start_date').datetimepicker({
             format: 'Y-m-d',
         });
@@ -27,72 +31,224 @@ function date_formated($date) {
         $('#eexp_to_date').datetimepicker({
             format: 'Y-m-d',
         });
-        $('#editDtlEdu').click(function(){
-            $('#idEduEmp').val( $('#emp_id').val() );
-            $('.deleteButton').show();
+        
+        // Handle Delete dengan AJAX
+        $('.deleteButton').click(function(e) {
+            e.preventDefault();
+            var deleteUrl = $(this).data('url');
+            $.ajax({
+                url: deleteUrl,
+                type: 'GET',
+                success: function(response) {
+                    window.location.href = '{{ route("hrd.employee") }}';
+                }
+            });
+        });
+
+        // Handle Save Education dengan AJAX
+        $('form#addEdu').on('submit', function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    window.location.href = '{{ route("hrd.employee") }}';
+                }
+            });
+        });
+
+        // Handle Save Work dengan AJAX
+        $('form#addWork').on('submit', function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    window.location.href = '{{ route("hrd.employee") }}';
+                }
+            });
+        });
+
+        // Handle Save Training dengan AJAX
+        $('form#addTrain').on('submit', function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    window.location.href = '{{ route("hrd.employee") }}';
+                }
+            });
+        });
+
+        // Handle Add New buttons
+        $('#addNewEdu').click(function() {
+            $('#idEduEmp').val($('#emp_id').val());
+            clearEducationForm();
             $('#addEdu').show();
+            $('#eduDtlSave').show();
+            $('#eduDtlCancel').show();
+            $('.deleteButton.edu').hide();
+            $('.editItemButton.edu').hide();
+            $('#editDtlEdu').show();
+        });
+
+        $('#addNewWork').click(function() {
+            $('#idWorkEmp').val($('#emp_id').val());
+            clearWorkForm();
+            $('#addWork').show();
+            $('#workDtlSave').show();
+            $('#workDtlCancel').show();
+            $('.deleteButton.work').hide();
+            $('.editItemButton.work').hide();
+            $('#editDtlWork').show();
+        });
+
+        $('#addNewTrain').click(function() {
+            $('#idTrainEmp').val($('#emp_id').val());
+            clearTrainingForm();
+            $('#addTrain').show();
+            $('#trainDtlSave').show();
+            $('#trainDtlCancel').show();
+            $('.deleteButton.train').hide();
+            $('.editItemButton.train').hide();
+            $('#editDtlTrain').show();
+        });
+
+        // Handle Edit buttons
+        $('#editDtlEdu').click(function(){
+            $('.deleteButton.edu').show();
+            $('.editItemButton.edu').show();
             $('#editDtlEdu').hide();
+            $('#addEdu').hide();
+        });
+
+        $('#editDtlWork').click(function(){
+            $('.deleteButton.work').show();
+            $('.editItemButton.work').show();
+            $('#editDtlWork').hide();
+            $('#addWork').hide();
+        });
+
+        $('#editDtlTrain').click(function(){
+            $('.deleteButton.train').show();
+            $('.editItemButton.train').show();
+            $('#editDtlTrain').hide();
+            $('#addTrain').hide();
+        });
+
+        // Handle edit item clicks
+        $('.editItemButton.edu').click(function(e) {
+            e.preventDefault();
+            $('#idEduEmp').val($('#emp_id').val());
+            
+            // Mengisi form dengan data yang ada
+            $('#education_id').val($(this).data('education'));
+            $('#institute').val($(this).data('institute'));
+            $('#major').val($(this).data('major'));
+            $('#year').val($(this).data('year'));
+            $('#score').val($(this).data('score'));
+            $('#start_date').val(formatDate($(this).data('start')));
+            $('#end_date').val(formatDate($(this).data('end')));
+            
+            $('#addEdu').show();
             $('#eduDtlSave').show();
             $('#eduDtlCancel').show();
         });
-        $('#eduDtlCancel').click(function(){
-            $('#addEdu').hide();
-            $('.deleteButton').hide();
-            $('#editDtlEdu').show();
-            $('#eduDtlSave').hide();
-            $('#eduDtlCancel').hide();
-        });
-        $('#eduDtlSave').click(function (){
-            $('form#addEdu').submit();
-        });
-        $('#editDtlWork').click(function(){
-            $('#idWorkEmp').val( $('#emp_id').val() );
-            $('.deleteButton1').show();
+
+        $('.editItemButton.work').click(function(e) {
+            e.preventDefault();
+            $('#idWorkEmp').val($('#emp_id').val());
+            
+            $('#eexp_employer').val($(this).data('employer'));
+            $('#eexp_jobtit').val($(this).data('jobtitle'));
+            $('#eexp_from_date').val(formatDate($(this).data('fromdate')));
+            $('#eexp_to_date').val(formatDate($(this).data('todate')));
+            $('#eexp_comments').val($(this).data('comments'));
+            
             $('#addWork').show();
-            $('#editDtlWork').hide();
             $('#workDtlSave').show();
             $('#workDtlCancel').show();
         });
+
+        $('.editItemButton.train').click(function(e) {
+            e.preventDefault();
+            $('#idTrainEmp').val($('#emp_id').val());
+            
+            $('#train_name').val($(this).data('name'));
+            $('#license_no').val($(this).data('licenseno'));
+            $('#license_issued_date').val(formatDate($(this).data('issueddate')));
+            $('#license_expiry_date').val(formatDate($(this).data('expirydate')));
+            
+            $('#addTrain').show();
+            $('#trainDtlSave').show();
+            $('#trainDtlCancel').show();
+        });
+
+        // Handle Cancels
+        $('#eduDtlCancel').click(function(){
+            $('#addEdu').hide();
+            $('#editDtlEdu').show();
+            $('#eduDtlSave').hide();
+            $('#eduDtlCancel').hide();
+            $('.deleteButton.edu').hide();
+            $('.editItemButton.edu').hide();
+        });
+
         $('#workDtlCancel').click(function(){
-            $('.deleteButton1').hide();
             $('#addWork').hide();
             $('#editDtlWork').show();
             $('#workDtlSave').hide();
             $('#workDtlCancel').hide();
+            $('.deleteButton.work').hide();
+            $('.editItemButton.work').hide();
         });
-        $('#workDtlSave').click(function (){
-            $('form#addWork').submit();
-        });
-        $('#editDtlTrain').click(function(){
-            $('#idTrainEmp').val( $('#emp_id').val() );
-            $('.deleteButton2').show();
-            $('#addTrain').show();
-            $('#editDtlTrain').hide();
-            $('#trainDtlSave').show();
-            $('#trainDtlCancel').show();
-        });
+
         $('#trainDtlCancel').click(function(){
-            $('.deleteButton2').hide();
             $('#addTrain').hide();
             $('#editDtlTrain').show();
             $('#trainDtlSave').hide();
             $('#trainDtlCancel').hide();
+            $('.deleteButton.train').hide();
+            $('.editItemButton.train').hide();
         });
-        $('#trainDtlSave').click(function (){
-            $('form#addTrain').submit();
-        });
-        $('#license_issued_date').datetimepicker({
-            format: 'Y-m-d',
-        });
-        $('#license_expiry_date').datetimepicker({
-            format: 'Y-m-d',
-        });
-    });
-    function deleteConfirmation(e, message) {
-        if (!confirm("Delete " + message + "?")) {
-            e.preventDefault();
+        
+        function clearEducationForm() {
+            $('#education_id').val('0');
+            $('#institute').val('');
+            $('#major').val('');
+            $('#year').val('');
+            $('#score').val('');
+            $('#start_date').val('');
+            $('#end_date').val('');
         }
-    }
+
+        function clearWorkForm() {
+            $('#eexp_employer').val('');
+            $('#eexp_jobtit').val('');
+            $('#eexp_from_date').val('');
+            $('#eexp_to_date').val('');
+            $('#eexp_comments').val('');
+        }
+
+        function clearTrainingForm() {
+            $('#train_name').val('');
+            $('#license_no').val('');
+            $('#license_issued_date').val('');
+            $('#license_expiry_date').val('');
+        }
+
+        function formatDate(date) {
+            if (!date) return '';
+            return date.split(' ')[0];
+        }
+    });
 </script>
 <div class="table-responsive">
     <div>
@@ -146,6 +302,8 @@ function date_formated($date) {
             <input type="reset" class="btn btn-danger" id="eduDtlCancel" value="Cancel">
         </form>
         <h4>Education</h4>
+        <button id="addNewEdu" class="btn btn-primary">Add New</button>
+        <button id="editDtlEdu" class="btn btn-success">Edit</button>
         <table id="data-table-basic" class="table table-striped">
             <thead>
             <tr>
@@ -162,7 +320,7 @@ function date_formated($date) {
                 @if($edus)
                     <?php $no = 1;?>
                     @foreach($edus as $row)
-                        <tr @if(isset($row->is_delete) && $row->is_delete == 1) style="opacity:0.5; background:#eee;" @endif>
+                        <tr>
                             <td>{{ $no }}</td>
                             <td>{{ $row->education->name }}</td>
                             <td>{{ $row->institute }}</td>
@@ -170,21 +328,28 @@ function date_formated($date) {
                             <td>{{ $row->start_date == "Jan  1 1900 12:00:00:AM" ? "-" : date_formated($row->start_date)  }}</td>
                             <td>{{ $row->end_date == "Jan  1 1900 12:00:00:AM" ? "-" : date_formated($row->end_date)  }}</td>
                             <td>
-                                @if(isset($row->is_delete) && $row->is_delete == 1)
-                                    <i class="fa fa-trash" style="color:gray" title="Deleted"></i>
-                                @else
-                                    <a onclick="deleteConfirmation(event,'education')" id="deleteButton" class="deleteButton" href="{{ route('personalEmp.deleteEducation', $row->id) }}"><i class="fa fa-trash" title="Delete"></i></a>
-                                @endif
+                                <a class="editItemButton edu" href="#" data-id="{{ $row->id }}" 
+                                   data-education="{{ $row->education_id }}"
+                                   data-institute="{{ $row->institute }}"
+                                   data-major="{{ $row->major }}"
+                                   data-year="{{ $row->year }}"
+                                   data-score="{{ $row->score }}"
+                                   data-start="{{ $row->start_date }}"
+                                   data-end="{{ $row->end_date }}">
+                                    <i class="fa fa-edit" title="Edit"></i>
+                                </a>
+                                <a href="#" class="deleteButton edu" data-url="{{ route('personalEmp.deleteEducation', $row->id) }}">
+                                    <i class="fa fa-trash" title="Delete"></i>
+                                </a>
                             </td>
                             <?php $no++;?>
                         </tr>
                     @endforeach
                 @else
-                    <tr><td colspan="5">No Data</td></tr>
+                    <tr><td colspan="7">No Data</td></tr>
                 @endif
             </tbody>
         </table>
-        <button id="editDtlEdu" class="btn btn-success">Edit</button>
     </div>
 <fieldset>
     <form id="addWork" action="{{ route('personalEmp.setWork') }}" method="post">
@@ -219,6 +384,8 @@ function date_formated($date) {
     </form>
     <div>
         <h4>Work Experience</h4>
+        <button id="addNewWork" class="btn btn-primary">Add New</button>
+        <button id="editDtlWork" class="btn btn-success">Edit</button>
         <table id="data-table-basic" class="table table-striped">
             <thead>
             <tr>
@@ -234,22 +401,33 @@ function date_formated($date) {
                 @if($quali)
                     <?php $no = 1;?>
                     @foreach($quali as $row)
-                    <tr>
-                        <td>{{ $no }}</td>
-                        <td>{{ $row->eexp_employer }}</td>
-                        <td>{{ $row->eexp_jobtit }}</td>
-                        <td>{{ date_formated($row->eexp_from_date) }}</td>
-                        <td>{{ date_formated($row->eexp_to_date) }}</td>
-                        <td><a onclick="deleteConfirmation(event,'work')" id="deleteButton1" class="deleteButton1" href="{{ route('personalEmp.deleteWork', $row->id) }}"><i class="fa fa-trash" title="Delete"></i></a></td>
-                    </tr>
+                        <tr>
+                            <td>{{ $no }}</td>
+                            <td>{{ $row->eexp_employer }}</td>
+                            <td>{{ $row->eexp_jobtit }}</td>
+                            <td>{{ date_formated($row->eexp_from_date) }}</td>
+                            <td>{{ date_formated($row->eexp_to_date) }}</td>
+                            <td>
+                                <a class="editItemButton work" href="#" data-id="{{ $row->id }}"
+                                   data-employer="{{ $row->eexp_employer }}"
+                                   data-jobtitle="{{ $row->eexp_jobtit }}"
+                                   data-fromdate="{{ $row->eexp_from_date }}"
+                                   data-todate="{{ $row->eexp_to_date }}"
+                                   data-comments="{{ $row->eexp_comments }}">
+                                    <i class="fa fa-edit" title="Edit"></i>
+                                </a>
+                                <a href="#" class="deleteButton work" data-url="{{ route('personalEmp.deleteWork', $row->id) }}">
+                                    <i class="fa fa-trash" title="Delete"></i>
+                                </a>
+                            </td>
+                        </tr>
                         <?php $no++;?>
                     @endforeach
                 @else
-                    <td colspan="5">No Data</td>
+                    <tr><td colspan="6">No Data</td></tr>
                 @endif
             </tbody>
         </table>
-        <button id="editDtlWork" class="btn btn-success">Edit</button>
     </div>
 </fieldset>
     <fieldset>
@@ -281,6 +459,8 @@ function date_formated($date) {
         </form>
         <div>
             <h4>Training</h4>
+            <button id="addNewTrain" class="btn btn-primary">Add New</button>
+            <button id="editDtlTrain" class="btn btn-success">Edit</button>
             <table id="data-table-basic" class="table table-striped">
                 <thead>
                 <tr>
@@ -298,23 +478,33 @@ function date_formated($date) {
                         <tr>
                             <td>{{ $no }}</td>
                             @if($row->license_id)
-                            <td>@if($row->license_id == 1) {{ $row->train_name }} @else {{ $row->trainning->name }} @endif</td>
+                                <td>@if($row->license_id == 1) {{ $row->train_name }} @else {{ $row->trainning->name }} @endif</td>
                             @else
-                            <td>{{ $row->train_name }}</td>
+                                <td>{{ $row->train_name }}</td>
                             @endif
                             <td>{{ $row->license_no }}</td>
                             <td>{{ date_formated($row->license_issued_date) }}</td>
                             <td>{{ date_formated($row->license_expiry_date) }}</td>
-                            <td><a onclick="deleteConfirmation(event,'training')" id="deleteButton2" class="deleteButton2" href="{{ route('personalEmp.deleteTrain', $row->id) }}"><i class="fa fa-trash" title="Delete"></i></a></td>
+                            <td>
+                                <a class="editItemButton train" href="#" data-id="{{ $row->id }}"
+                                   data-name="{{ $row->train_name }}"
+                                   data-licenseno="{{ $row->license_no }}"
+                                   data-issueddate="{{ $row->license_issued_date }}"
+                                   data-expirydate="{{ $row->license_expiry_date }}">
+                                    <i class="fa fa-edit" title="Edit"></i>
+                                </a>
+                                <a href="#" class="deleteButton train" data-url="{{ route('personalEmp.deleteTrain', $row->id) }}">
+                                    <i class="fa fa-trash" title="Delete"></i>
+                                </a>
+                            </td>
                         </tr>
                         <?php $no++;?>
                     @endforeach
                 @else
-                    <td colspan="5">No Data</td>
+                    <tr><td colspan="6">No Data</td></tr>
                 @endif
                 </tbody>
             </table>
-            <button id="editDtlTrain" class="btn btn-success">Edit</button>
         </div>
     </fieldset>
 </div>

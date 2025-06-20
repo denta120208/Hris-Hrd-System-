@@ -15,6 +15,7 @@ class Dependents extends Model
         'ed_name',
         'ed_relationship',
         'ed_relationship_type',
-        'ed_date_of_birth'
+        'ed_date_of_birth',
+        'is_delete'
     ];
 }

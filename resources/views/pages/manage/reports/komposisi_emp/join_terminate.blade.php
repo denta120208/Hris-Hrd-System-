@@ -98,9 +98,9 @@
                                                         <td>{{ $key + 1 }}</td>
                                                         <td>{{ $employee->nik }}</td>
                                                         <td>{{ $employee->name }}</td>
-                                                        <td>{{ $employee->dept }}</td>
-                                                        <td>{{ date('d-m-Y', strtotime($employee->join_date)) }}</td>
-                                                        <td>{{ $employee->unit }}</td>
+                                                        <td>{{ isset($employee->dept) ? $employee->dept : '-' }}</td>
+                                                        <td>{{ isset($employee->join_date) ? date('d-m-Y', strtotime($employee->join_date)) : '-' }}</td>
+                                                        <td>{{ isset($employee->unit) ? $employee->unit : '-' }}</td>
                                                     </tr>
                                                 @endforeach
                                             @else
@@ -148,11 +148,11 @@
                                                         <td>{{ $key + 1 }}</td>
                                                         <td>{{ $employee->nik }}</td>
                                                         <td>{{ $employee->name }}</td>
-                                                        <td>{{ $employee->dept }}</td>
-                                                        <td>{{ date('d-m-Y', strtotime($employee->join_date)) }}</td>
-                                                        <td>{{ date('d-m-Y', strtotime($employee->end_date)) }}</td>
-                                                        <td>{{ $employee->unit }}</td>
-                                                        <td>{{ $employee->reason }}</td>
+                                                        <td>{{ isset($employee->dept) ? $employee->dept : '-' }}</td>
+                                                        <td>{{ isset($employee->join_date) ? date('d-m-Y', strtotime($employee->join_date)) : '-' }}</td>
+                                                        <td>{{ isset($employee->end_date) ? date('d-m-Y', strtotime($employee->end_date)) : '-' }}</td>
+                                                        <td>{{ isset($employee->unit) ? $employee->unit : '-' }}</td>
+                                                        <td>{{ isset($employee->reason) ? $employee->reason : '-' }}</td>
                                                     </tr>
                                                 @endforeach
                                             @else

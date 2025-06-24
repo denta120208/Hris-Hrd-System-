@@ -193,6 +193,11 @@ Route::post('/stsp/edits/', ['as' => 'stsp.edits', 'uses' => 'Punhisments\STSPCo
 Route::get('/printSTSP/{id}', ['as' => 'printSTSP', 'uses' => 'Punhisments\STSPController@printSTSP']);
 // End ST/SP
 
+// Reports
+Route::get('/hrd/rKomposisi', ['as' => 'hrd.rKomposisi', 'uses' => 'HRD\Reports\KomposisiController@statusEmp']);
+Route::get('/hrd/rJoinTerminate', ['as' => 'hrd.rJoinTerminate', 'uses' => 'HRD\Reports\KomposisiController@joinTerminate']);
+Route::get('/hrd/addJoinTerminateMenu', ['as' => 'hrd.addJoinTerminateMenu', 'uses' => 'HRD\Reports\KomposisiController@addJoinTerminateMenu']);
+
 // Download File
 Route::any('/induction', ['as' => 'induction', 'uses' => 'HRD\Administrations\InductionController@index']);
 //Route::any('/stsp/add', ['as' => 'stsp.add', 'uses' => 'Punhisments\STSPController@addPunishment']);
@@ -222,6 +227,12 @@ Route::post('/terminationApproval/reject/{id}', ['as' => 'terminationApproval.re
 
 // -- HRD Route --
 //Route::get('/hrd/dashboard', ['as' => 'hrd.dashboard', 'uses' => 'DashboardController@hrd_index' ]);
+
+// Attendance DW Report (Join & Terminate Section)
+Route::post('/hrd/rekap_absendw', [
+    'as' => 'hrd.rekap_absendw',
+    'uses' => 'HRD\Reports\AttendanceController@rekapDW'
+]);
 
 Route::any('/hrd/employee', ['as' => 'hrd.employee', 'uses' => 'HRD\Emp\EmployeeController@index' ]);
 Route::get('/hrd/viewEmp/{id}', ['as' => 'hrd.viewEmp', 'uses' => 'HRD\Emp\EmployeeController@viewEmp' ]);
@@ -405,40 +416,22 @@ Route::any('/hrd/sync', ['as' => 'hrd.sync', 'uses' => 'HRD\Sync\SyncController@
 Route::post('/hrd/syncProcess', ['as' => 'hrd.syncProcess', 'uses' => 'HRD\Sync\SyncController@syncProcess' ]);
 
 // Report
-Route::any('hrd/rPersonal', ['as' => 'hrd.rPersonal', 'uses' => 'HRD\Reports\RPersonalController@index']);
-Route::post('hrd/search_rPersonal', ['as' => 'hrd.search_rPersonal', 'uses' => 'HRD\Reports\RPersonalController@search_emp']);
-Route::get('hrd/vPersonal/{id}', ['as' => 'hrd.vPersonal', 'uses' => 'HRD\Reports\RPersonalController@view']);
-//Route::get('hrd/pPersonal/', ['as' => 'hrd.pPersonal', 'uses' => 'HRD\Reports\RPersonalController@printPersonal']);
-Route::get('hrd/pPersonal/{id}', ['as' => 'hrd.pPersonal', 'uses' => 'HRD\Reports\RPersonalController@printPersonal']);
-Route::get('hrd/pPersonalbod/{id}/{id1}', ['as' => 'hrd.pPersonal', 'uses' => 'HRD\Reports\RPersonalController@printPersonalbod']);
-Route::get('hrd/pQualification/', ['as' => 'hrd.pQualification', 'uses' => 'HRD\Reports\RPersonalController@printQualification']);
-Route::any('hrd/rKomposisi', ['as' => 'hrd.rKomposisi', 'uses' => 'HRD\Reports\KomposisiController@statusEmp']);
-Route::any('hrd/rEducation', ['as' => 'hrd.rEducation', 'uses' => 'HRD\Reports\EducationController@index']);
-Route::any('hrd/srEducation', ['as' => 'hrd.srEducation', 'uses' => 'HRD\Reports\EducationController@search_emp']);
-Route::get('hrd/rEducation/{id}/show', ['as' => 'hrd.rEducation', 'uses' => 'HRD\Reports\EducationController@detail']);
-Route::any('hrd/rAge', ['as' => 'hrd.rAge', 'uses' => 'HRD\Reports\KomposisiController@reportUsia']);
-Route::get('/hrd/rAge/{id}/show', ['as' => 'hrd.rAge.show', 'uses' => 'HRD\Reports\KomposisiController@reportUsiaShow']);
-Route::any('hrd/rGender', ['as' => 'hrd.rGender', 'uses' => 'HRD\Reports\KomposisiController@reportGender']);
-Route::any('hrd/retired', ['as' => 'hrd.retired', 'uses' => 'HRD\Reports\ExpiredController@age_exp']);
-Route::post('hrd/retired', ['as' => 'hrd.retired', 'uses' => 'HRD\Reports\ExpiredController@rAgeExp']);
-Route::any('hrd/contract_exp', ['as' => 'hrd.contract_exp', 'uses' => 'HRD\Reports\ExpiredController@contract_exp']);
-Route::post('hrd/contract_exp', ['as' => 'hrd.contract_exp', 'uses' => 'HRD\Reports\ExpiredController@rContractExp']);
-Route::any('/hrd/absen', ['as' => 'hrd.absen', 'uses' => 'HRD\Reports\AttendanceController@index']);
-Route::post('/hrd/rekap_absen', ['as' => 'hrd.rekap_absen', 'uses' => 'HRD\Reports\AttendanceController@rekap']);
-Route::any('/hrd/absen_perorang', ['as' => 'hrd.absen_perorang', 'uses' => 'HRD\Reports\AttendanceController@index_perorg']);
-Route::post('/hrd/rekap_perorang', ['as' => 'hrd.rekap_perorang', 'uses' => 'HRD\Reports\AttendanceController@rekap_perorg']);
-Route::any('/hrd/data_karyawan', ['as' => 'hrd.data_karyawan', 'uses' => 'HRD\Reports\DataKaryawanController@index']);
-Route::post('/hrd/view_data_karyawan', ['as' => 'hrd.view_data_karyawan', 'uses' => 'HRD\Reports\DataKaryawanController@viewDataKaryawan']);
-Route::any('/hrd/absendw', ['as' => 'hrd.absendw', 'uses' => 'HRD\Reports\AttendanceController@absenDW']);
-Route::post('/hrd/rekap_absendw', ['as' => 'hrd.rekap_absendw', 'uses' => 'HRD\Reports\AttendanceController@rekapDW']);
-Route::any('/hrd/absen_dw_perorang', ['as' => 'hrd.absen_dw_perorang', 'uses' => 'HRD\Reports\AttendanceController@index_dw_perorg']);
-Route::post('/hrd/rekap_dw_perorang', ['as' => 'hrd.rekap_dw_perorang', 'uses' => 'HRD\Reports\AttendanceController@rekap_dw_perorg']);
-Route::any('/hrd/appraisal_emp', ['as' => 'hrd.appraisal_emp', 'uses' => 'HRD\Reports\AppraisalController@index']);
-Route::post('/hrd/view_appraisal_emp', ['as' => 'hrd.view_appraisal_emp', 'uses' => 'HRD\Reports\AppraisalController@viewDataAppraisal']);
-Route::any('/hrd/print_appraisal_emp/{id}/{id1}/{id2}', ['as' => 'hrd.print_appraisal_emp', 'uses' => 'HRD\Reports\AppraisalController@printDataAppraisal']);
-Route::any('/hrd/appraisal_emp_summary', ['as' => 'hrd.appraisal_emp_summary', 'uses' => 'HRD\Reports\AppraisalController@dataSummaryAppraisal']);
-Route::post('/hrd/view_appraisal_emp_summary', ['as' => 'hrd.view_appraisal_emp_summary', 'uses' => 'HRD\Reports\AppraisalController@viewDataSummaryAppraisal']);
-Route::any('/hrd/print_appraisal_emp_summary/{id}/{id1}/{id2}', ['as' => 'hrd.print_appraisal_emp_summary', 'uses' => 'HRD\Reports\AppraisalController@printDataSummaryAppraisal']);
+Route::any('/hrd/rPersonal', ['as' => 'hrd.rPersonal', 'uses' => 'HRD\Reports\RPersonalController@index']);
+Route::post('/hrd/search_rPersonal', ['as' => 'hrd.search_rPersonal', 'uses' => 'HRD\Reports\RPersonalController@search']);
+Route::get('/hrd/vPersonal/{id}', ['as' => 'hrd.vPersonal', 'uses' => 'HRD\Reports\RPersonalController@view']);
+Route::get('/hrd/pPersonal/{id}', ['as' => 'hrd.pPersonal', 'uses' => 'HRD\Reports\RPersonalController@printPersonal']);
+
+// Komposisi Employee Report
+Route::any('/hrd/rKomposisi', ['as' => 'hrd.rKomposisi', 'uses' => 'HRD\Reports\KomposisiController@statusEmp']);
+Route::any('/hrd/rKomposisiReport', ['as' => 'hrd.rKomposisiReport', 'uses' => 'HRD\Reports\KomposisiController@statusEmpReport']);
+Route::any('/hrd/rTurnOver', ['as' => 'hrd.rTurnOver', 'uses' => 'HRD\Reports\KomposisiController@turnOverEmp']);
+Route::any('/hrd/rTurnOverReport', ['as' => 'hrd.rTurnOverReport', 'uses' => 'HRD\Reports\KomposisiController@turnOverEmpReport']);
+Route::any('/hrd/rDtlTurnOver', ['as' => 'hrd.rDtlTurnOver', 'uses' => 'HRD\Reports\KomposisiController@dtlTurnOverEmp']);
+Route::any('/hrd/rDtlTurnOverReport', ['as' => 'hrd.rDtlTurnOverReport', 'uses' => 'HRD\Reports\KomposisiController@dtlTurnOverEmpReport']);
+
+// Join & Terminate Report
+Route::any('/hrd/rJoinTerminate', ['as' => 'hrd.rJoinTerminate', 'uses' => 'HRD\Reports\KomposisiController@joinTerminate']);
+
 // End Report
 
 // Inductions
@@ -547,3 +540,12 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('hrd/template/update', ['as' => 'hrd.updateTemplate', 'uses' => 'HRD\Emp\EmployeeController@updateTemplate']);
     Route::get('hrd/template/delete/{id}', ['as' => 'hrd.deleteTemplate', 'uses' => 'HRD\Emp\EmployeeController@deleteTemplate']);
 });
+
+// Reports Routes
+Route::group(['prefix' => 'hrd', 'middleware' => ['auth']], function () {
+    Route::get('rJoinTerminate', 'HRD\Reports\JoinTerminateController@index');
+    
+
+});
+
+ Route::get('/report_emp_join_terminate', ['as' => 'report_emp_join_terminate', 'uses' => 'HRD\Reports\JoinTerminateController@reportjointerminate']);

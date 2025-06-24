@@ -133,22 +133,38 @@ class RPersonalController extends Controller {
         $now = date('Y-m-d H:i:s');
         $year = date("Y", strtotime('-2 year'));
         $emp = $this->emp->where('emp_number', $id)->first();
-        //$emp_birthday =  date_formated($emp->emp_birthday);
-        //date("d-m-Y", strtotime($emp->emp_birthday));
-        //date_create($emp->emp_birthday);
-        //dd($emp_birthday);
+        
         $pic = DB::table('emp_picture')->where('emp_number', $id)->first();
         $eRewards = $this->eReward->where('emp_number', $id)->orderBy('id')->get();
         $ePromots = $this->ePromot->where('sub_emp_number', $id)->where('pro_status', '3')->orderBy('id')->get();
         $trains = $this->train->where('emp_number', $id)->get();
         $edus = $this->edu->where('emp_number', $id)->orderBy('year', 'ASC')->get();
         $punishs = $this->ePunish->where('sub_emp_number', $id)->where('punish_status', '3')->orderBy('id')->get();
+        
+        // Get data karyawan join dalam 1 bulan terakhir
+        $joinedEmployees = DB::table('employee')
+            ->select('employee.*', 'job_title.job_title')
+            ->leftJoin('job_title', 'employee.job_title_code', '=', 'job_title.id')
+            ->where('joined_date', '>=', date('Y-m-d', strtotime('-1 month')))
+            ->where('termination_id', '=', 0)
+            ->orderBy('joined_date', 'desc')
+            ->get();
+
+        // Get data karyawan terminate dalam 1 bulan terakhir
+        $terminatedEmployees = DB::table('employee')
+            ->select('employee.*', 'job_title.job_title', 'termination.term_date')
+            ->leftJoin('job_title', 'employee.job_title_code', '=', 'job_title.id')
+            ->leftJoin('termination', 'employee.termination_id', '=', 'termination.id')
+            ->where('termination.term_date', '>=', date('Y-m-d', strtotime('-1 month')))
+            ->where('termination_id', '>', 0)
+            ->orderBy('termination.term_date', 'desc')
+            ->get();
+
         $ijin = DB::connection('websen')->select("
             select count(cmi.id) as id, cmi.comIjin, CAST(cmi.keterangan as varchar(250)) as keterangan
             FROM com_ijin ci INNER JOIN com_master_perijinan cmi
             on ci.comIDIjin = cmi.id INNER JOIN com_member cm
             on ci.comIDKaryawan = cm.id
-            -- where ci.comEmpNumber = '" . $id . "'
             where cm.comNIP = '" . $emp->employee_id . "' AND cmi.id <> '4'
             AND ci.comDate >= '" . $year . "-01-01'
             GROUP BY cmi.comIjin, CAST(cmi.keterangan as varchar(250))
@@ -165,7 +181,7 @@ class RPersonalController extends Controller {
             'table_activity' => 'employee'
         ]);
 
-        return view('pages.manage.reports.view', compact('emp', 'pic', 'ijin', 'edus', 'trains', 'eRewards', 'ePromots', 'punishs'));
+        return view('pages.manage.reports.view', compact('emp', 'pic', 'ijin', 'edus', 'trains', 'eRewards', 'ePromots', 'punishs', 'joinedEmployees', 'terminatedEmployees'));
     }
 
 //     public function printPersonal(Request $request){
@@ -238,11 +254,11 @@ class RPersonalController extends Controller {
 //         $view .= "<td><table><tr>
 // 		<td style='font-weight: bold'>Employee Name</td>
 // 		<td></td>
-// 		<td>".$emp->emp_firstname." ".$emp->emp_middle_name." ".$emp->emp_lastname."</td>
+// 		<td>" . $emp->emp_firstname . " " . $emp->emp_middle_name . " " . $emp->emp_lastname . "</td>
 // 	</tr><tr>
 // 		<td style='font-weight: bold'>DOB</td>
 // 		<td></td>
-// 		<td>".$emp_birthday. "</td>
+// 		<td>" . $emp_birthday . "</td>
 // 	</tr><tr>
 // 		<td style='font-weight: bold'>Period of Employment</td>
 // 		<td></td>

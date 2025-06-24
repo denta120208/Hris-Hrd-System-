@@ -18,6 +18,10 @@ function date_formated($date) {
         $('#trainDtlCancel').hide();
         $('.deleteButton').hide();
         $('.editItemButton').hide();
+        // Pastikan tombol Cancel sembunyi di awal
+        $('#eduDtlCancel').hide();
+        $('#workDtlCancel').hide();
+        $('#trainDtlCancel').hide();
         
         $('#start_date').datetimepicker({
             format: 'Y-m-d',
@@ -97,6 +101,13 @@ function date_formated($date) {
             $('.deleteButton.edu').hide();
             $('.editItemButton.edu').hide();
             $('#editDtlEdu').show();
+            $('#cancelEditEdu').hide();
+        });
+
+        // Ketika klik tombol Edit (di samping Add New)
+        $('#editDtlEdu').click(function() {
+            $(this).hide();
+            $('#cancelEditEdu').show();
         });
 
         $('#addNewWork').click(function() {
@@ -108,6 +119,13 @@ function date_formated($date) {
             $('.deleteButton.work').hide();
             $('.editItemButton.work').hide();
             $('#editDtlWork').show();
+            $('#cancelEditWork').hide();
+        });
+
+        // Ketika klik tombol Edit (Work)
+        $('#editDtlWork').click(function() {
+            $(this).hide();
+            $('#cancelEditWork').show();
         });
 
         $('#addNewTrain').click(function() {
@@ -119,6 +137,13 @@ function date_formated($date) {
             $('.deleteButton.train').hide();
             $('.editItemButton.train').hide();
             $('#editDtlTrain').show();
+            $('#cancelEditTrain').hide();
+        });
+
+        // Ketika klik tombol Edit (Train)
+        $('#editDtlTrain').click(function() {
+            $(this).hide();
+            $('#cancelEditTrain').show();
         });
 
         // Handle Edit buttons
@@ -199,6 +224,35 @@ function date_formated($date) {
             $('#eduDtlCancel').hide();
             $('.deleteButton.edu').hide();
             $('.editItemButton.edu').hide();
+            // Reset form jika perlu
+            clearEducationForm();
+            $('#cancelEditEdu').hide();
+            $('#editDtlEdu').show();
+        });
+
+        // Cancel di samping Add New (mode edit)
+        $('#cancelEditEdu').click(function(){
+            $('#addEdu').hide();
+            $('#editDtlEdu').show();
+            $('#eduDtlSave').hide();
+            $('#eduDtlCancel').hide();
+            $('.deleteButton.edu').hide();
+            $('.editItemButton.edu').hide();
+            clearEducationForm();
+            $('#cancelEditEdu').hide();
+            $('#editDtlEdu').show();
+        });
+
+        // Cancel di samping Add New (mode edit)
+        $('#cancelEditEdu').click(function(){
+            $('#addEdu').hide();
+            $('#editDtlEdu').show();
+            $('#eduDtlSave').hide();
+            $('#eduDtlCancel').hide();
+            $('.deleteButton.edu').hide();
+            $('.editItemButton.edu').hide();
+            clearEducationForm();
+            $('#cancelEditEdu').hide();
         });
 
         $('#workDtlCancel').click(function(){
@@ -208,6 +262,22 @@ function date_formated($date) {
             $('#workDtlCancel').hide();
             $('.deleteButton.work').hide();
             $('.editItemButton.work').hide();
+            clearWorkForm();
+            $('#cancelEditWork').hide();
+            $('#editDtlWork').show();
+        });
+
+        // Cancel di samping Add New (Work)
+        $('#cancelEditWork').click(function(){
+            $('#addWork').hide();
+            $('#editDtlWork').show();
+            $('#workDtlSave').hide();
+            $('#workDtlCancel').hide();
+            $('.deleteButton.work').hide();
+            $('.editItemButton.work').hide();
+            clearWorkForm();
+            $('#cancelEditWork').hide();
+            $('#editDtlWork').show();
         });
 
         $('#trainDtlCancel').click(function(){
@@ -217,6 +287,22 @@ function date_formated($date) {
             $('#trainDtlCancel').hide();
             $('.deleteButton.train').hide();
             $('.editItemButton.train').hide();
+            clearTrainingForm();
+            $('#cancelEditTrain').hide();
+            $('#editDtlTrain').show();
+        });
+
+        // Cancel di samping Add New (Train)
+        $('#cancelEditTrain').click(function(){
+            $('#addTrain').hide();
+            $('#editDtlTrain').show();
+            $('#trainDtlSave').hide();
+            $('#trainDtlCancel').hide();
+            $('.deleteButton.train').hide();
+            $('.editItemButton.train').hide();
+            clearTrainingForm();
+            $('#cancelEditTrain').hide();
+            $('#editDtlTrain').show();
         });
         
         function clearEducationForm() {
@@ -298,12 +384,13 @@ function date_formated($date) {
                     <input class="form-control" type="text" name="end_date" id="end_date" readonly="readonly" />
                 </div>
             </div>
-            <input type="submit" class="btn btn-primary" value="Save">
-            <input type="reset" class="btn btn-danger" id="eduDtlCancel" value="Cancel">
+            <input type="submit" class="btn btn-primary" id="eduDtlSave" value="Save">
+            <input type="button" class="btn btn-danger" id="eduDtlCancel" value="Cancel" style="display:none;">
         </form>
         <h4>Education</h4>
         <button id="addNewEdu" class="btn btn-primary">Add New</button>
-        <button id="editDtlEdu" class="btn btn-success">Edit</button>
+<button id="cancelEditEdu" class="btn btn-danger" style="display:none; margin-left:8px;">Cancel</button>
+<button id="editDtlEdu" class="btn btn-success">Edit</button>
         <table id="data-table-basic" class="table table-striped">
             <thead>
             <tr>
@@ -380,12 +467,13 @@ function date_formated($date) {
             <textarea rows="6" class="form-control" type="text" name="eexp_comments" id="eexp_comments"></textarea>
         </div>
         <input type="submit" class="btn btn-primary" id="workDtlSave" value="Save">
-        <input type="reset" class="btn btn-danger" id="workDtlCancel" value="Cancel">
+        <input type="button" class="btn btn-danger" id="workDtlCancel" value="Cancel" style="display:none;">
     </form>
     <div>
         <h4>Work Experience</h4>
         <button id="addNewWork" class="btn btn-primary">Add New</button>
-        <button id="editDtlWork" class="btn btn-success">Edit</button>
+<button id="cancelEditWork" class="btn btn-danger" style="display:none; margin-left:8px;">Cancel</button>
+<button id="editDtlWork" class="btn btn-success">Edit</button>
         <table id="data-table-basic" class="table table-striped">
             <thead>
             <tr>
@@ -455,12 +543,13 @@ function date_formated($date) {
                 </div>
             </div>
             <input type="submit" class="btn btn-primary" id="trainDtlSave" value="Save">
-            <input type="reset" class="btn btn-danger" id="trainDtlCancel" value="Cancel">
+            <input type="button" class="btn btn-danger" id="trainDtlCancel" value="Cancel" style="display:none;">
         </form>
         <div>
             <h4>Training</h4>
             <button id="addNewTrain" class="btn btn-primary">Add New</button>
-            <button id="editDtlTrain" class="btn btn-success">Edit</button>
+<button id="cancelEditTrain" class="btn btn-danger" style="display:none; margin-left:8px;">Cancel</button>
+<button id="editDtlTrain" class="btn btn-success">Edit</button>
             <table id="data-table-basic" class="table table-striped">
                 <thead>
                 <tr>

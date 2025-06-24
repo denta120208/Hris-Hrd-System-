@@ -235,6 +235,66 @@ function date_formated($date){
                 @endif
                 </tbody>
             </table>
+
+            <h3>Karyawan Join (1 Bulan Terakhir)</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>NIK</th>
+                    <th>Nama</th>
+                    <th>Jabatan</th>
+                    <th>Tanggal Join</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if($joinedEmployees->count() > 0)
+                    <?php $no = 1;?>
+                    @foreach($joinedEmployees as $employee)
+                        <tr>
+                            <td>{{ $no }}</td>
+                            <td>{{ $employee->employee_id }}</td>
+                            <td>{{ $employee->emp_firstname . ' ' . $employee->emp_middle_name . ' ' . $employee->emp_lastname }}</td>
+                            <td>{{ $employee->job_title }}</td>
+                            <td>{{ date('d-m-Y', strtotime($employee->joined_date)) }}</td>
+                        </tr>
+                        <?php $no++;?>
+                    @endforeach
+                @else
+                    <tr><td colspan="5">Tidak ada data karyawan join dalam 1 bulan terakhir</td></tr>
+                @endif
+                </tbody>
+            </table>
+
+            <h3>Karyawan Terminate (1 Bulan Terakhir)</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>NIK</th>
+                    <th>Nama</th>
+                    <th>Jabatan Terakhir</th>
+                    <th>Tanggal Terminate</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if($terminatedEmployees->count() > 0)
+                    <?php $no = 1;?>
+                    @foreach($terminatedEmployees as $employee)
+                        <tr>
+                            <td>{{ $no }}</td>
+                            <td>{{ $employee->employee_id }}</td>
+                            <td>{{ $employee->emp_firstname . ' ' . $employee->emp_middle_name . ' ' . $employee->emp_lastname }}</td>
+                            <td>{{ $employee->job_title }}</td>
+                            <td>{{ date('d-m-Y', strtotime($employee->term_date)) }}</td>
+                        </tr>
+                        <?php $no++;?>
+                    @endforeach
+                @else
+                    <tr><td colspan="5">Tidak ada data karyawan terminate dalam 1 bulan terakhir</td></tr>
+                @endif
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

@@ -148,6 +148,64 @@
             </div>
         </div>
         @endif
+
+        {{-- Tabel Join Employee --}}
+        @if(isset($joinEmployees) && count($joinEmployees) > 0)
+        <div class="row" style="margin-top:30px;">
+            <div class="col-lg-12">
+                <h4>Data Join Employee ({{ $start_date }} - {{ $end_date }})</h4>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>NIK</th>
+                            <th>Nama</th>
+                            <th>Tanggal Join</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($joinEmployees as $i => $emp)
+                        <tr>
+                            <td>{{ $i+1 }}</td>
+                            <td>{{ $emp->employee_id }}</td>
+                            <td>{{ $emp->emp_firstname }} {{ $emp->emp_middle_name }} {{ $emp->emp_lastname }}</td>
+                            <td>{{ $emp->joined_date }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @endif
+
+        {{-- Tabel Terminate Employee --}}
+        @if(isset($terminateEmployees) && count($terminateEmployees) > 0)
+        <div class="row" style="margin-top:30px;">
+            <div class="col-lg-12">
+                <h4>Data Terminate Employee ({{ $start_date }} - {{ $end_date }})</h4>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>NIK</th>
+                            <th>Nama</th>
+                            <th>Tanggal Terminate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($terminateEmployees as $i => $emp)
+                        <tr>
+                            <td>{{ $i+1 }}</td>
+                            <td>{{ $emp->employee_id }}</td>
+                            <td>{{ $emp->emp_firstname }} {{ $emp->emp_middle_name }} {{ $emp->emp_lastname }}</td>
+                            <td>{{ $emp->termination_date }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 <?php

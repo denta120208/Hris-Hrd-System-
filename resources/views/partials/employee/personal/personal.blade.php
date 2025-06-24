@@ -18,7 +18,7 @@ $(document).ready(function(){
         $('#personalDtlSave').hide();
         $('#personalDtlCancel').hide();
     });
-    $('#personalDtlSave').click(function (){
+    $('#personalDtlSave').click(function (){   
         $('form#personalForm').submit();
     });
     // $('#emp_dri_lice_exp_date').datepicker({

@@ -42,7 +42,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    1
+                                    
                                 </td>
                                 <td>
                                     Surat Pernyataan Berakhir Hubungan Kerja

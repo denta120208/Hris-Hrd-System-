@@ -90,33 +90,7 @@ class AttendanceController extends Controller{
         return view('pages.manage.reports.absen.rekap2_old', compact('arr', 'start_date', 'end_date','dataAbsen'));
     }
     
-    public function rekap(Request $request){
-        //dd('test');
-        
-        $now = date('Y-m-d H:i:s');
-        $start_date = date("Y-m-d", strtotime($request->start_date));
-        $end_date = date("Y-m-d", strtotime($request->end_date));
-        
-        //dd("exec sp_absen_employee '".$start_date."','".$end_date."','".$request->project."'");
-        
-        $arr = DB::select("exec sp_absen_employee '".$start_date."','".$end_date."','".$request->project."'");
-        
-        
-        \DB::table('log_activity')->insert([
-            'action' => 'HRD View Rekap Attendance',
-            'module' => 'Report',
-            'sub_module' => 'Attendance',
-            'modified_by' => Session::get('name'),
-            'description' => 'HRD View Rekap Attendance, location id '. $request->project,
-            'created_at' => $now,
-            'updated_at' => $now,
-            'table_activity' => 'employee'
-        ]);
-        
-        $dataAbsen = 1;
-        
-        return view('pages.manage.reports.absen.rekap2', compact('arr', 'start_date', 'end_date','dataAbsen'));
-    }
+    h 
 
     public function index_dw_perorg(){
         $now = date('Y-m-d H:i:s');
@@ -297,17 +271,27 @@ class AttendanceController extends Controller{
     }
     
     public function rekapDW(Request $request){
-        //dd('test');
-        
         $now = date('Y-m-d H:i:s');
         $start_date = date("Y-m-d", strtotime($request->start_date));
         $end_date = date("Y-m-d", strtotime($request->end_date));
-        
-        //dd("exec sp_absen_employee '".$start_date."','".$end_date."','".$request->project."'");
-        
+
+        // Data utama absensi DW
         $arr = DB::select("exec sp_absen_employee_DW '".$start_date."','".$end_date."','".$request->project."'");
-        
-        
+
+        // Data Join Employee (masuk pada rentang tanggal)
+        $joinEmployees = \App\Models\Master\Employee::whereDate('joined_date', '>=', $start_date)
+            ->whereDate('joined_date', '<=', $end_date)
+            ->where('location_id', $request->project)
+            ->get();
+
+        // Data Terminate Employee (keluar pada rentang tanggal)
+        $terminateEmployees = \App\Models\Master\Employee::where('termination_id', '!=', 0)
+            ->whereNotNull('termination_id')
+            ->whereDate('termination_date', '>=', $start_date)
+            ->whereDate('termination_date', '<=', $end_date)
+            ->where('location_id', $request->project)
+            ->get();
+
         \DB::table('log_activity')->insert([
             'action' => 'HRD View Attendance DW Report Index',
             'module' => 'Report',
@@ -318,9 +302,9 @@ class AttendanceController extends Controller{
             'updated_at' => $now,
             'table_activity' => 'employee'
         ]);
-        
+
         $dataAbsenDW = 1;
-        
-        return view('pages.manage.reports.absen.rekap2_dw', compact('arr', 'start_date', 'end_date','dataAbsenDW'));
+
+        return view('pages.manage.reports.absen.rekap2_dw', compact('arr', 'start_date', 'end_date','dataAbsenDW', 'joinEmployees', 'terminateEmployees'));
     }
 }

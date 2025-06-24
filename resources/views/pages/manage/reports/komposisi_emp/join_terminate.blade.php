@@ -92,8 +92,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if(isset($joinedEmployees) && count($joinedEmployees) > 0)
-                                                @foreach($joinedEmployees as $key => $employee)
+                                            @if(isset($arr) && count($arr) > 0)
+                                                @foreach($arr as $key => $employee)
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
                                                         <td>{{ $employee->nik }}</td>
@@ -142,8 +142,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if(isset($terminatedEmployees) && count($terminatedEmployees) > 0)
-                                                @foreach($terminatedEmployees as $key => $employee)
+                                            @if(isset($arr) && count($arr) > 0)
+                                                @foreach($arr as $key => $employee)
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
                                                         <td>{{ $employee->nik }}</td>

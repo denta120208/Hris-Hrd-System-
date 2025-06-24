@@ -11,6 +11,7 @@ class JoinTerminateController extends Controller
 {
     public function reportjointerminate(Request $request)
     {
+
         // Get projects for dropdown
         $projects = DB::table('location')
                      ->select('id', 'name')
@@ -23,7 +24,8 @@ class JoinTerminateController extends Controller
         $startDate = $request->get('start_date');
         $endDate = $request->get('end_date');
         $projectId = $request->get('project_id');
-
+   $arr = DB::select("exec sp_join_terminate_report'".$startDate."','".$endDate."','".$projectId."'");
+         
         if ($startDate && $endDate) {
             // Query for joined employees
             $joinedEmployees = DB::table('employee')
@@ -71,13 +73,7 @@ class JoinTerminateController extends Controller
             $terminatedEmployees = $terminatedEmployees->get();
         }
 
-        return view('pages.manage.reports.komposisi_emp.join_terminate', compact(
-            'projects',
-            'joinedEmployees',
-            'terminatedEmployees',
-            'startDate',
-            'endDate',
-            'projectId'
-        ));
+        
+          return view('pages.manage.reports.komposisi_emp.join_terminate', compact('arr', 'startDate', 'endDate', 'joinedEmployees', 'terminatedEmployees', 'projects'));
     }
 } 

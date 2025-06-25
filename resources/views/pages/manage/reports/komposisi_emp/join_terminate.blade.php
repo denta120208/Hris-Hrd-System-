@@ -17,51 +17,35 @@
                     <h3 class="header smaller lighter blue">Employee Join Report</h3>
                     
                     <!-- Filter Form -->
-                    <div class="well well-sm">
+                    <div class="well well-sm" style="padding: 15px;">
                         <form method="GET" action="{{ route('report_emp_join_terminate') }}" id="filterForm">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Start Date</label>
-                                        <div class="input-group">
-                                            <input type="date" name="start_date" class="form-control input-sm" value="{{ isset($startDate) ? $startDate : '' }}" required>
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
+                            <div class="row" style="max-width: 1000px; margin: 0 auto;">
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="background: #f8f9fa; font-size: 12px;">Start</span>
+                                        <input type="date" name="start_date" class="form-control" value="{{ isset($startDate) ? $startDate : '' }}" required>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>End Date</label>
-                                        <div class="input-group">
-                                            <input type="date" name="end_date" class="form-control input-sm" value="{{ isset($endDate) ? $endDate : '' }}" required>
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="background: #f8f9fa; font-size: 12px;">End</span>
+                                        <input type="date" name="end_date" class="form-control" value="{{ isset($endDate) ? $endDate : '' }}" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Project</label>
-                                        <select name="project_id" class="form-control input-sm select2">
-                                            <option value="">--Pilih Project--</option>
-                                            @foreach($projects as $project)
-                                                <option value="{{ $project->id }}" {{ (isset($projectId) && $projectId == $project->id) ? 'selected' : '' }}>
-                                                    {{ $project->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                <div class="col-md-4 col-sm-8">
+                                    <select name="project_id" class="form-control select2">
+                                        <option value="">--Pilih Project--</option>
+                                        @foreach($projects as $project)
+                                            <option value="{{ $project->id }}" {{ (isset($projectId) && $projectId == $project->id) ? 'selected' : '' }}>
+                                                {{ $project->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>&nbsp;</label>
-                                        <button type="submit" class="btn btn-primary btn-sm btn-block">
-                                            <i class="fa fa-search"></i> Search
-                                        </button>
-                                    </div>
+                                <div class="col-md-2 col-sm-4">
+                                    <button type="submit" class="btn btn-success btn-block">
+                                        <i class="fa fa-search"></i> Search
+                                    </button>
                                 </div>
                             </div>
                         </form>

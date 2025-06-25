@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect(route('auth.login'));
@@ -421,16 +422,20 @@ Route::post('/hrd/search_rPersonal', ['as' => 'hrd.search_rPersonal', 'uses' => 
 Route::get('/hrd/vPersonal/{id}', ['as' => 'hrd.vPersonal', 'uses' => 'HRD\Reports\RPersonalController@view']);
 Route::get('/hrd/pPersonal/{id}', ['as' => 'hrd.pPersonal', 'uses' => 'HRD\Reports\RPersonalController@printPersonal']);
 
-// Komposisi Employee Report
-Route::any('/hrd/rKomposisi', ['as' => 'hrd.rKomposisi', 'uses' => 'HRD\Reports\KomposisiController@statusEmp']);
-Route::any('/hrd/rKomposisiReport', ['as' => 'hrd.rKomposisiReport', 'uses' => 'HRD\Reports\KomposisiController@statusEmpReport']);
-Route::any('/hrd/rTurnOver', ['as' => 'hrd.rTurnOver', 'uses' => 'HRD\Reports\KomposisiController@turnOverEmp']);
-Route::any('/hrd/rTurnOverReport', ['as' => 'hrd.rTurnOverReport', 'uses' => 'HRD\Reports\KomposisiController@turnOverEmpReport']);
-Route::any('/hrd/rDtlTurnOver', ['as' => 'hrd.rDtlTurnOver', 'uses' => 'HRD\Reports\KomposisiController@dtlTurnOverEmp']);
-Route::any('/hrd/rDtlTurnOverReport', ['as' => 'hrd.rDtlTurnOverReport', 'uses' => 'HRD\Reports\KomposisiController@dtlTurnOverEmpReport']);
+// Reports Routes
+Route::group(['prefix' => 'hrd', 'middleware' => ['auth']], function () {
+    Route::get('rJoinTerminate', 'HRD\Reports\JoinTerminateController@index');
+});
 
 // Join & Terminate Report
-Route::any('/hrd/rJoinTerminate', ['as' => 'hrd.rJoinTerminate', 'uses' => 'HRD\Reports\KomposisiController@joinTerminate']);
+Route::get('/report_emp_join_terminate', [
+    'as' => 'report_emp_join_terminate', 
+    'uses' => 'HRD\Reports\JoinTerminateController@reportJoinTerminate'
+]);
+Route::get('/report_emp_terminate', [
+    'as' => 'report_emp_terminate', 
+    'uses' => 'HRD\Reports\JoinTerminateController@reportTerminate'
+]);
 
 // End Report
 
@@ -540,12 +545,3 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('hrd/template/update', ['as' => 'hrd.updateTemplate', 'uses' => 'HRD\Emp\EmployeeController@updateTemplate']);
     Route::get('hrd/template/delete/{id}', ['as' => 'hrd.deleteTemplate', 'uses' => 'HRD\Emp\EmployeeController@deleteTemplate']);
 });
-
-// Reports Routes
-Route::group(['prefix' => 'hrd', 'middleware' => ['auth']], function () {
-    Route::get('rJoinTerminate', 'HRD\Reports\JoinTerminateController@index');
-    
-
-});
-
- Route::get('/report_emp_join_terminate', ['as' => 'report_emp_join_terminate', 'uses' => 'HRD\Reports\JoinTerminateController@reportjointerminate']);

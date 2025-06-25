@@ -1,6 +1,6 @@
 @extends('_main_layout')
 
-@section('title', 'Employee Join')
+@section('title', 'Terminate Report')
 
 @section('content')
 <div class="main-content">
@@ -14,11 +14,11 @@
         <div class="page-content">
             <div class="row">
                 <div class="col-xs-12">
-                    <h3 class="header smaller lighter blue">Employee Join Report</h3>
+                    <h3 class="header smaller lighter blue"> Employee Terminate Report</h3>
                     
                     <!-- Filter Form -->
                     <div class="well well-sm">
-                        <form method="GET" action="{{ route('report_emp_join_terminate') }}" id="filterForm">
+                        <form method="GET" action="{{ route('report_emp_terminate') }}" id="filterForm">
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -67,10 +67,11 @@
                         </form>
                     </div>
 
-                    <!-- Join Report -->
+                 
+                    <!-- Terminate Report -->
                     <div class="widget-box">
                         <div class="widget-header">
-                            <h4 class="widget-title">Data Karyawan Join</h4>
+                            <h4 class="widget-title">Data Karyawan Terminate</h4>
                             <div class="widget-toolbar">
                                 <a href="#" data-action="collapse">
                                     <i class="ace-icon fa fa-chevron-up"></i>
@@ -87,10 +88,10 @@
                                                 <th>NIK</th>
                                                 <th>Nama</th>
                                                 <th>Department</th>
-                                                <th>Join Date</th>  
-                                                <th>Unit</th>
-                                                <th>Status</th>
                                                
+                                                <th>End Date</th>
+                                                <th>Unit</th>
+                                                <th>Reason</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -101,10 +102,10 @@
                                                         <td>{{ $employee->nik }}</td>
                                                         <td>{{ $employee->emp_fullname }}</td>
                                                         <td>{{ isset($employee->dept) ? $employee->dept : '-' }}</td>
-                                                        <td>{{ isset($employee->join_date) ? date('d-m-Y', strtotime($employee->join_date)) : '-' }}</td>
-                                                        <td>{{ isset($employee->unit) ? $employee->unit : '-' }}</td>
-                                                        <td>{{ $employee->status }}</td>
                                                        
+                                                        <td>{{ isset($employee->termination_date) ? date('d-m-Y', strtotime($employee->termination_date)) : '-' }}</td>
+                                                        <td>{{ isset($employee->unit) ? $employee->unit : '-' }}</td>
+                                                        <td>{{ isset($employee->reason) ? $employee->reason : '-' }}</td>
                                                     </tr>
                                                 @endforeach
                                             @else
@@ -118,9 +119,11 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Terminate Report -->
-                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @push('scripts')
 <script>

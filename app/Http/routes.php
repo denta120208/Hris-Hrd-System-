@@ -546,7 +546,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('hrd/template/delete/{id}', ['as' => 'hrd.deleteTemplate', 'uses' => 'HRD\Emp\EmployeeController@deleteTemplate']);
 });
 
-// HRD Reports Routes
+
 Route::get('/hrd/rEducation', ['as' => 'hrd.rEducation', 'uses' => 'HRD\Reports\EducationController@index']);
 Route::post('/hrd/rEducation/search', ['as' => 'hrd.srEducation', 'uses' => 'HRD\Reports\EducationController@search_emp']);
 Route::get('/hrd/rEducation/{id}/show', ['as' => 'hrd.rEducation.show', 'uses' => 'HRD\Reports\EducationController@detail']);

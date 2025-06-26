@@ -545,3 +545,23 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('hrd/template/update', ['as' => 'hrd.updateTemplate', 'uses' => 'HRD\Emp\EmployeeController@updateTemplate']);
     Route::get('hrd/template/delete/{id}', ['as' => 'hrd.deleteTemplate', 'uses' => 'HRD\Emp\EmployeeController@deleteTemplate']);
 });
+
+// HRD Reports Routes
+Route::get('/hrd/rEducation', ['as' => 'hrd.rEducation', 'uses' => 'HRD\Reports\EducationController@index']);
+Route::post('/hrd/rEducation/search', ['as' => 'hrd.srEducation', 'uses' => 'HRD\Reports\EducationController@search_emp']);
+Route::get('/hrd/rEducation/{id}/show', ['as' => 'hrd.rEducation.show', 'uses' => 'HRD\Reports\EducationController@detail']);
+Route::get('/hrd/rAge', ['as' => 'hrd.rAge', 'uses' => 'HRD\Reports\KomposisiController@reportUsia']);
+Route::get('/hrd/rAge/{id}/show', ['as' => 'hrd.rAge.show', 'uses' => 'HRD\Reports\KomposisiController@reportUsiaShow']);
+Route::get('/hrd/rGender', ['as' => 'hrd.rGender', 'uses' => 'HRD\Reports\KomposisiController@reportGender']);
+Route::get('/hrd/absen', ['as' => 'hrd.absen', 'uses' => 'HRD\Reports\AttendanceController@index']);
+Route::get('/hrd/absen_perorang', ['as' => 'hrd.absen_perorang', 'uses' => 'HRD\Reports\AttendanceController@index_perorg']);
+Route::post('/hrd/rekap_perorang', ['as' => 'hrd.rekap_perorang', 'uses' => 'HRD\Reports\AttendanceController@rekap_perorg']);
+Route::post('/hrd/rekap_absen', ['as' => 'hrd.rekap_absen', 'uses' => 'HRD\Reports\AttendanceController@rekap']);
+Route::get('/hrd/absendw', ['as' => 'hrd.absendw', 'uses' => 'HRD\Reports\AttendanceController@absenDW']);
+Route::get('/hrd/absen_dw_perorang', ['as' => 'hrd.absen_dw_perorang', 'uses' => 'HRD\Reports\AttendanceController@index_dw_perorg']);
+Route::post('/hrd/rekap_dw_perorang', ['as' => 'hrd.rekap_dw_perorang', 'uses' => 'HRD\Reports\AttendanceController@rekap_dw_perorg']);
+Route::post('/hrd/rekap_absendw', ['as' => 'hrd.rekap_absendw', 'uses' => 'HRD\Reports\AttendanceController@rekapDW']);
+
+// Data Karyawan Routes
+Route::get('/hrd/data_karyawan', ['as' => 'hrd.data_karyawan', 'uses' => 'HRD\Reports\DataKaryawanController@index']);
+Route::post('/hrd/data_karyawan/view', ['as' => 'hrd.view_data_karyawan', 'uses' => 'HRD\Reports\DataKaryawanController@viewDataKaryawan']);

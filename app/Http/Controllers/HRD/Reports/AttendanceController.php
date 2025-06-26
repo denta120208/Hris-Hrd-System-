@@ -90,8 +90,6 @@ class AttendanceController extends Controller{
         return view('pages.manage.reports.absen.rekap2_old', compact('arr', 'start_date', 'end_date','dataAbsen'));
     }
     
-    h 
-
     public function index_dw_perorg(){
         $now = date('Y-m-d H:i:s');
         $emps = NULL;
@@ -306,5 +304,59 @@ class AttendanceController extends Controller{
         $dataAbsenDW = 1;
 
         return view('pages.manage.reports.absen.rekap2_dw', compact('arr', 'start_date', 'end_date','dataAbsenDW', 'joinEmployees', 'terminateEmployees'));
+    }
+
+    public function perorang()
+    {
+        $now = date('Y-m-d H:i:s');
+        
+        \DB::table('log_activity')->insert([
+            'action' => 'HRD View Attendance Perorang',
+            'module' => 'Report',
+            'sub_module' => 'Attendance',
+            'modified_by' => Session::get('name'),
+            'description' => 'HRD View Attendance Perorang',
+            'created_at' => $now,
+            'updated_at' => $now,
+            'table_activity' => ''
+        ]);
+        
+        return view('pages.manage.reports.absen.perorang');
+    }
+
+    public function dw()
+    {
+        $now = date('Y-m-d H:i:s');
+        
+        \DB::table('log_activity')->insert([
+            'action' => 'HRD View DW Attendance',
+            'module' => 'Report',
+            'sub_module' => 'Attendance',
+            'modified_by' => Session::get('name'),
+            'description' => 'HRD View DW Attendance',
+            'created_at' => $now,
+            'updated_at' => $now,
+            'table_activity' => ''
+        ]);
+        
+        return view('pages.manage.reports.absen.dw_index');
+    }
+
+    public function dwPerorang()
+    {
+        $now = date('Y-m-d H:i:s');
+        
+        \DB::table('log_activity')->insert([
+            'action' => 'HRD View DW Attendance Perorang',
+            'module' => 'Report',
+            'sub_module' => 'Attendance',
+            'modified_by' => Session::get('name'),
+            'description' => 'HRD View DW Attendance Perorang',
+            'created_at' => $now,
+            'updated_at' => $now,
+            'table_activity' => ''
+        ]);
+        
+        return view('pages.manage.reports.absen.dw_perorang');
     }
 }
